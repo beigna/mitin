@@ -38,3 +38,7 @@ class Meeting(models.Model):
 class Guest(models.Model):
     meeting = models.ForeignKey(Meeting)
 
+    confirmation_code = models.CharField(max_length=128, unique=True)
+    email = models.EmailField(_('Email'), unique=True)
+
+
