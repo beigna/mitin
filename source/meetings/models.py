@@ -1,22 +1,40 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import ugettext as _
+
 from django.contrib.auth.models import User
 
-# Create your models here.
 
 class Meeting(models.Model):
     owner = models.ForeignKey(User, blank=True, null=True)
 
-    when = models.DateTimeField()
-    where = models.CharField(max_length=128)
-    description = models.TextField()
+    when = models.DateTimeField(_('When'))
+    where = models.CharField(_('Where'), max_length=128)
+    description = models.TextField(_('Description'))
 
-    limited_seating = models.BooleanField()
-    max_guests = models.PositiveIntegerField(blank=True, null=True)
-    min_guests = models.PositiveIntegerField(blank=True, null=True)
-    allow_waitlist = models.BooleanField()
+    limited_seating = models.BooleanField(_('Limited seating'))
+    min_guests = models.PositiveIntegerField(_('Min guests'), blank=True, null=True)
+    max_guests = models.PositiveIntegerField(_('Max guests'), blank=True, null=True)
+    allow_waitlist = models.BooleanField(_('Allow waitlist'))
+
 
     def __unicode__(self):
-        txt = self.description
-        if len(txt) > 15:
-            txt = '%s ...' % txt[:15]
-        return txt
+        label = self.description
+        if len(label) > 15:
+            label = '%s ...' % label[:15]
+        return label
+
+    def clean(self):
+        if self.limited_seating:
+            if self.max_guests < self.min_guests:
+                raise ValidationError(_('Max guets must be greater than Min guest.'))
+
+
+    class Meta:
+        verbose_name = _('Meeting')
+        verbose_name_plural = _('Meetings')
+
+
+class Guest(models.Model):
+    meeting = models.ForeignKey(Meeting)
+
