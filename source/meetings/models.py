@@ -36,9 +36,19 @@ class Meeting(models.Model):
 
 
 class Guest(models.Model):
+    ATTENDING_CHOICES = (
+        ('yes', _('Yes')),
+        ('no', _('No')),
+        ('maybe', _('May be')),
+    )
+
     meeting = models.ForeignKey(Meeting)
 
-    confirmation_code = models.CharField(max_length=128, unique=True)
-    email = models.EmailField(_('Email'), unique=True)
+    key = models.CharField(max_length=40, unique=True)
+    salt = models.CharField(max_length=128, unique=True)
 
+    email = models.EmailField(_('Email'), unique=True)
+    attending = models.CharField(_('Attending'), max_length=10, blank=True,
+        null=True, db_index=True)
+    is_responded = modesl.BooleanField(_('Is responded?'))
 
