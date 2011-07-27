@@ -48,10 +48,13 @@ class Guest(models.Model):
         ('maybe', _('May be')),
     )
 
+    class Meta:
+        unique_together = ('meeting', 'email')
+
     meeting = models.ForeignKey(Meeting)
 
     fakeid = models.CharField(max_length=40, unique=True)
-    email = models.EmailField(_('Email'), unique=True)
+    email = models.EmailField(_('Email'))
     salt = models.CharField(max_length=40, unique=True)
     key = models.CharField(max_length=40, unique=True)
 
