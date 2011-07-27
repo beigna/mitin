@@ -1,3 +1,4 @@
+
 from hashlib import sha1
 from datetime import datetime
 
@@ -16,8 +17,10 @@ class Meeting(models.Model):
     description = models.TextField(_('Description'))
 
     limited_seating = models.BooleanField(_('Limited seating'))
-    min_guests = models.PositiveIntegerField(_('Min guests'), blank=True, null=True)
-    max_guests = models.PositiveIntegerField(_('Max guests'), blank=True, null=True)
+    min_guests = models.PositiveIntegerField(_('Min guests'),
+        blank=True, null=True)
+    max_guests = models.PositiveIntegerField(_('Max guests'),
+        blank=True, null=True)
     allow_waitlist = models.BooleanField(_('Allow waitlist'))
 
 
@@ -47,10 +50,11 @@ class Guest(models.Model):
 
     meeting = models.ForeignKey(Meeting)
 
-    key = models.CharField(max_length=40, unique=True)
-    salt = models.CharField(max_length=128, unique=True)
-
+    fakeid = models.CharField(max_length=40, unique=True)
     email = models.EmailField(_('Email'), unique=True)
+    salt = models.CharField(max_length=40, unique=True)
+    key = models.CharField(max_length=40, unique=True)
+
     attending = models.CharField(_('Attending'), max_length=10,
         choices=ATTENDING_CHOICES, blank=True, null=True, db_index=True)
     is_responded = models.BooleanField(_('Is responded?'))
@@ -62,6 +66,6 @@ class Guest(models.Model):
         if not self.pk:
             self.salt = sha1('%s%s' % (datetime.now(), self.email)).hexdigest()
             self.key = sha1('%s%s' % (self.salt, self.email)).hexdigest()
+            self.fakeid = sha1('%s%s' % (self.salt, self.key)).hexdigest()
 
         super(Guest, self).save(*args, **kwargs)
-
