@@ -146,6 +146,13 @@ LOGGING = {
     }
 }
 
+# Email settings
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_SENDER = 'me@example.com'
+
 try:
     from local_settings import *
 except ImportError:
