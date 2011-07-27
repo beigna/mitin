@@ -1,3 +1,6 @@
+from hashlib import sha1
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -21,7 +24,7 @@ class Meeting(models.Model):
     def __unicode__(self):
         label = self.description
         if len(label) > 15:
-            label = '%s ...' % label[:15]
+            label = u'%s ...' % label[:15]
         return label
 
     def clean(self):
@@ -48,7 +51,17 @@ class Guest(models.Model):
     salt = models.CharField(max_length=128, unique=True)
 
     email = models.EmailField(_('Email'), unique=True)
-    attending = models.CharField(_('Attending'), max_length=10, blank=True,
-        null=True, db_index=True)
-    is_responded = modesl.BooleanField(_('Is responded?'))
+    attending = models.CharField(_('Attending'), max_length=10,
+        choices=ATTENDING_CHOICES, blank=True, null=True, db_index=True)
+    is_responded = models.BooleanField(_('Is responded?'))
+
+    def __unicode__(self):
+        return u'%s' % self.email
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.salt = sha1('%s%s' % (datetime.now(), self.email)).hexdigest()
+            self.key = sha1('%s%s' % (self.salt, self.email)).hexdigest()
+
+        super(Guest, self).save(*args, **kwargs)
 
