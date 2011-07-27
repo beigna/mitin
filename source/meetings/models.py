@@ -5,11 +5,12 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext as _
-
 from django.contrib.auth.models import User
 
+from audits.models import Audit
 
-class Meeting(models.Model):
+
+class Meeting(Audit):
     owner = models.ForeignKey(User, blank=True, null=True)
 
     when = models.DateTimeField(_('When'))
@@ -41,7 +42,7 @@ class Meeting(models.Model):
         verbose_name_plural = _('Meetings')
 
 
-class Guest(models.Model):
+class Guest(Audit):
     ATTENDING_CHOICES = (
         ('yes', _('Yes')),
         ('no', _('No')),
