@@ -9,7 +9,7 @@ class MeetingAdmin(admin.ModelAdmin):
 
 class GuestAdmin(admin.ModelAdmin):
     list_display = ('meeting', 'email', 'attending', 'is_responded')
-    readonly_fields = ('key', 'salt', 'fakeid')
+    readonly_fields = ('key', 'salt', 'fakeid', 'created_at', 'updated_at')
 
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Guest, GuestAdmin)
