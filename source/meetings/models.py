@@ -1,5 +1,4 @@
 
-from hashlib import sha1
 from datetime import datetime
 
 from django.core.exceptions import ValidationError
@@ -8,11 +7,20 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
 from audits.models import Audit
+from lib.hashes import salt, encrypt
 
 
 class Meeting(Audit):
+    class Meta:
+        verbose_name = _('Meeting')
+        verbose_name_plural = _('Meetings')
+
     owner = models.ForeignKey(User, blank=True, null=True)
     owner_email = models.EmailField()
+
+    fakeid = models.CharField(max_length=40, unique=True)
+    salt = models.CharField(max_length=40, unique=True)
+    key = models.CharField(max_length=40, unique=True)
 
     slug = models.CharField(max_length=50, unique=True)
 
@@ -41,21 +49,26 @@ class Meeting(Audit):
             if self.max_guests < self.min_guests:
                 raise ValidationError(_('Max guets must be greater than Min guest.'))
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.salt = salt()
+            self.key = encrypt(phrase=self.owner_email, salt=self.salt)
+            self.fakeid = encrypt(phrase=self.key, salt=self.salt)
 
-    class Meta:
-        verbose_name = _('Meeting')
-        verbose_name_plural = _('Meetings')
+        super(Meeting, self).save(*args, **kwargs)
 
 
 class Guest(Audit):
+    class Meta:
+        unique_together = ('meeting', 'email')
+        verbose_name = _('Guest')
+        verbose_name_plural = _('Guests')
+
     ATTENDING_CHOICES = (
         ('yes', _('Yes')),
         ('no', _('No')),
         ('maybe', _('May be')),
     )
-
-    class Meta:
-        unique_together = ('meeting', 'email')
 
     meeting = models.ForeignKey(Meeting)
 
@@ -73,8 +86,8 @@ class Guest(Audit):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.salt = sha1('%s%s' % (datetime.now(), self.email)).hexdigest()
-            self.key = sha1('%s%s' % (self.salt, self.email)).hexdigest()
-            self.fakeid = sha1('%s%s' % (self.salt, self.key)).hexdigest()
+            self.salt = salt()
+            self.key = encrypt(phrase=self.email, salt=self.salt)
+            self.fakeid = encrypt(phrase=self.key, salt=self.salt)
 
         super(Guest, self).save(*args, **kwargs)
