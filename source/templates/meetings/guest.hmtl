@@ -2,5 +2,5 @@
 {% load i18n %}
 
 {% block content %}
-hola asadasdas {{ meeting.owner_email }}
+hola asadasdas {{ guest.email }}
 {% endblock %}

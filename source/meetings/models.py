@@ -35,7 +35,7 @@ class Meeting(Audit):
         blank=True, null=True)
     allow_waitlist = models.BooleanField(_('Allow waitlist'))
 
-    is_active = models.BooleanField(_('Is active?'))
+    is_confirmed = models.BooleanField(_('Is confirmed?'))
 
 
     def __unicode__(self):
