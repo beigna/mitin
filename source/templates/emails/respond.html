@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% trans "Estimado" %} {{ guest.email }}:
+
+El dia {{ guest.meeting.when }} en {{ guest.meeting.where }} tendrá lugar:
+
+{{ guest.meeting.description }}
+
+Para responderla te pedimos que ingreses en http://localhost:8000/meetings/respond/?f={{ guest.fakeid }}&k={{ guest.key }}
+
+Muchas gracias.
