@@ -12,6 +12,9 @@ from audits.models import Audit
 
 class Meeting(Audit):
     owner = models.ForeignKey(User, blank=True, null=True)
+    owner_email = models.EmailField()
+
+    slug = models.CharField(max_length=50, unique=True)
 
     when = models.DateTimeField(_('When'))
     where = models.CharField(_('Where'), max_length=128)
@@ -23,6 +26,8 @@ class Meeting(Audit):
     max_guests = models.PositiveIntegerField(_('Max guests'),
         blank=True, null=True)
     allow_waitlist = models.BooleanField(_('Allow waitlist'))
+
+    is_active = models.BooleanField(_('Is active?'))
 
 
     def __unicode__(self):

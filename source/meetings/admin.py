@@ -4,7 +4,7 @@ from meetings.models import Meeting, Guest
 
 
 class MeetingAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ('slug',)
 
 
 class GuestAdmin(admin.ModelAdmin):
