@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+jojo
+
+<form id="meetings_create" action="{% url meetings_create %}" enctype="multipart/form-data" method="post">
+  <fieldset>
+    {{ form.as_ul }}
+  </fieldset>
+
+  <input type="submit" value="{% trans 'Create' %}" />
+
+</form>
+{% endblock %}
