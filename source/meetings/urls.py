@@ -2,5 +2,6 @@
 from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('meetings.views',
-    url(r'^guest_confirm/$', 'guest_confirm', name='meetings_guest_confirm'),
+    url(r'^create/$', 'create', name='meetings_create'),
+    url(r'^confirm/$', 'confirm', name='meetings_confirm'),
 )
