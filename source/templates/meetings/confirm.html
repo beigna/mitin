@@ -3,4 +3,23 @@
 
 {% block content %}
 hola asadasdas {{ meeting.owner_email }}
+
+<form id="meetings_confirm" action="{% url meetings_confirm %}" enctype="multipart/form-data" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>{% trans 'Meeting info' %}</legend>
+    {{ form.as_ul }}
+  </fieldset>
+
+  <fieldset>
+    <legend>{% trans 'Guest list' %}</legend>
+    {{ guest_forms.management_form }}
+    {% for gf in guest_forms %}
+      {{ gf.as_ul }}
+    {% endfor %}
+  </fieldset>
+
+  <input type="submit" value="{% trans 'Confirm' %}" />
+
+</form>
 {% endblock %}

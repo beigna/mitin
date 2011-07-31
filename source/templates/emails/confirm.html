@@ -1,7 +1,7 @@
 {% load i18n %}
 
-{% trans "Estimado" %} {{ guest.email }}:
+{% trans "Estimado" %} {{ meeting.owner_email }}:
 
-Has creado una reunión. Para confirmarla y continuar con el proceso te pedimos que ingreses en http://localhost:8000/meetings/confirm/?f={{ guest.fakeid }}&k={{ guest.key }}
+Has creado una reunión. Para confirmarla y continuar con el proceso te pedimos que ingreses en http://localhost:8000/meetings/confirm/?f={{ meeting.fakeid }}&k={{ meeting.key }}
 
 Muchas gracias.

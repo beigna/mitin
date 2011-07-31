@@ -5,6 +5,7 @@
 jojo
 
 <form id="meetings_create" action="{% url meetings_create %}" enctype="multipart/form-data" method="post">
+  {% csrf_token %}
   <fieldset>
     {{ form.as_ul }}
   </fieldset>
