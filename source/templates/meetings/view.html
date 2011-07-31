@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h3>{% trans 'Meeting info' %}</h3>
+<ul>
+  <li>{% trans 'When' %}: {{ meeting.when }}</li>
+  <li>{% trans 'Where' %}: {{ meeting.where }}</li>
+  <li>{% trans 'Description' %}: {{ meeting.description }}</li>
+  <li>{% trans 'Limited seating?' %}: {{ meeting.limited_seating }}</li>
+  <li>{% trans 'Min guests' %}: {{ meeting.min_guests }}</li>
+  <li>{% trans 'Max guests' %}: {{ meeting.max_guests }}</li>
+  <li>{% trans 'Allow waitlist?' %}: {{ meeting.allow_waitlist }}</li>
+</ul>
+<h3>{% trans 'Guest list' %}</h3>
+<ol>
+  {% for guest in meeting.guest_set.all %}
+  <li>{{ guest.email }} {% trans 'Atteding' %}: {{ guest.attending }}</li>
+  {% endfor %}
+</ol>
+
+
+{% endblock %}

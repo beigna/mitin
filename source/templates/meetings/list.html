@@ -3,4 +3,25 @@
 
 {% block content %}
 había una vez un pez que tenía la cola al revez (?)
+
+<table>
+  <tr>
+    <th>{% trans 'Title' %}</th>
+    <th>{% trans 'Where' %}</th>
+    <th>{% trans 'When' %}</th>
+    <th>{% trans 'Actions' %}</th>
+  </tr>
+  {% for meeting in meetings %}
+  <tr>
+    <td>{{ meeting.id }}</td>
+    <td>{{ meeting.where }}</td>
+    <td>{{ meeting.when }}</td>
+    <td>
+      <a href="{% url meetings_delete meeting.slug %}">{% trans 'Delete' %}</a>
+      <a href="{% url meetings_update meeting.slug %}">{% trans 'Update' %}</a>
+      <a href="{% url meetings_view meeting.slug %}">{% trans 'View' %}</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}

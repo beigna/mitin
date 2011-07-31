@@ -9,8 +9,21 @@ from meetings.forms import MeetingForm, GuestForm
 
 
 def list(request):
+    meetings = Meeting.objects.all()
+
     return render(request, 'meetings/list.html',
-        {},
+        {
+            'meetings': meetings,
+        },
+    )
+
+def view(request, slug):
+    meeting = get_object_or_404(Meeting, slug=slug)
+
+    return render(request, 'meetings/view.html',
+        {
+            'meeting': meeting,
+        },
     )
 
 def create(request):
@@ -31,6 +44,11 @@ def create(request):
         },
     )
 
+def update(request, slug):
+    raise NotImplemented()
+
+def delete(request, slug):
+    raise NotImplemented()
 
 def confirm(request):
     meeting = get_object_or_404(Meeting,
