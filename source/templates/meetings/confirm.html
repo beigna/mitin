@@ -4,7 +4,7 @@
 {% block content %}
 hola asadasdas {{ meeting.owner_email }}
 
-<form id="meetings_confirm" action="{% url meetings_confirm %}" enctype="multipart/form-data" method="post">
+<form id="meetings_confirm" action="" enctype="multipart/form-data" method="post">
   {% csrf_token %}
   <fieldset>
     <legend>{% trans 'Meeting info' %}</legend>
