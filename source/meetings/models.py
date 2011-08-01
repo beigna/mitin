@@ -1,10 +1,11 @@
 
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User
 
 from audits.models import Audit
 from lib.hashes import salt, encrypt
@@ -18,12 +19,8 @@ class Meeting(Audit):
     owner = models.ForeignKey(User, blank=True, null=True)
     owner_email = models.EmailField()
 
-    fakeid = models.CharField(max_length=40, unique=True)
-    salt = models.CharField(max_length=40, unique=True)
-    key = models.CharField(max_length=40, unique=True)
-
-    slug = models.CharField(max_length=50, unique=True)
-
+    title = models.CharField(_('Title'), max_length=40)
+    slug = models.CharField(max_length=50, unique=True, editable=False)
     when = models.DateTimeField(_('When'))
     where = models.CharField(_('Where'), max_length=128)
     description = models.TextField(_('Description'))
@@ -37,12 +34,13 @@ class Meeting(Audit):
 
     is_confirmed = models.BooleanField(_('Is confirmed?'))
 
+    # for secure confirm
+    fakeid = models.CharField(max_length=40, unique=True)
+    salt = models.CharField(max_length=40, unique=True)
+    key = models.CharField(max_length=40, unique=True)
 
     def __unicode__(self):
-        label = self.description
-        if len(label) > 15:
-            label = u'%s ...' % label[:15]
-        return label
+        return u'%s' % self.title
 
     def clean(self):
         if self.limited_seating:
@@ -54,6 +52,9 @@ class Meeting(Audit):
             self.salt = salt()
             self.key = encrypt(phrase=self.owner_email, salt=self.salt)
             self.fakeid = encrypt(phrase=self.key, salt=self.salt)
+
+            self.slug = slugify('%s-%s' % (self.when.strftime('%y%m%d%H%M'),
+                self.title))
 
         super(Meeting, self).save(*args, **kwargs)
 
@@ -72,17 +73,20 @@ class Guest(Audit):
 
     meeting = models.ForeignKey(Meeting)
 
-    fakeid = models.CharField(max_length=40, unique=True)
+    name = models.CharField(_('Name'), max_length=50, blank=True, null=True)
     email = models.EmailField(_('Email'))
-    salt = models.CharField(max_length=40, unique=True)
-    key = models.CharField(max_length=40, unique=True)
 
     attending = models.CharField(_('Attending'), max_length=10,
         choices=ATTENDING_CHOICES, blank=True, null=True, db_index=True)
     is_responded = models.BooleanField(_('Is responded?'))
 
+    # for secure respond
+    fakeid = models.CharField(max_length=40, unique=True)
+    salt = models.CharField(max_length=40, unique=True)
+    key = models.CharField(max_length=40, unique=True)
+
     def __unicode__(self):
-        return u'%s' % self.email
+        return u'%s <%s>' % (self.name, self.email)
 
     def save(self, *args, **kwargs):
         if not self.pk:

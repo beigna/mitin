@@ -4,6 +4,7 @@
 {% block content %}
 <h3>{% trans 'Meeting info' %}</h3>
 <ul>
+  <li>{% trans 'Title' %}: {{ meeting.title }}</li>
   <li>{% trans 'When' %}: {{ meeting.when }}</li>
   <li>{% trans 'Where' %}: {{ meeting.where }}</li>
   <li>{% trans 'Description' %}: {{ meeting.description }}</li>

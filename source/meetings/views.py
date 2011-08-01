@@ -45,18 +45,7 @@ def create(request):
     )
 
 def update(request, slug):
-    raise NotImplemented()
-
-def delete(request, slug):
-    raise NotImplemented()
-
-def confirm(request):
-    meeting = get_object_or_404(Meeting,
-        fakeid=request.GET.get('f'),
-        key=request.GET.get('k'))
-
-    if meeting.is_confirmed:
-        return redirect(reverse('meetings_list'))
+    meeting = get_object_or_404(Meeting, slug=slug)
 
     if request.method == 'GET':
         form = MeetingForm(instance=meeting)
@@ -71,20 +60,32 @@ def confirm(request):
         if form.is_valid() and guest_forms.is_valid():
             form.save()
             instances = guest_forms.save(commit=False)
-
             for instance in instances:
                 instance.meeting = meeting
                 instance.save()
 
             return redirect(reverse('meetings_list'))
 
-    return render(request, 'meetings/confirm.html',
+    return render(request, 'meetings/update.html',
         {
             'meeting': meeting,
             'form': form,
             'guest_forms': guest_forms,
         },
     )
+
+def delete(request, slug):
+    raise NotImplemented()
+
+def confirm(request):
+    meeting = get_object_or_404(Meeting,
+        fakeid=request.GET.get('f'),
+        key=request.GET.get('k'))
+
+    meeting.is_confirmed = True
+    meeting.save()
+
+    return redirect(reverse('meetings_update', args=(meeting.slug,)))
 
 def respond(request):
     guest = get_object_or_404(Guest,

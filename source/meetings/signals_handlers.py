@@ -7,12 +7,16 @@ from django.template.loader import render_to_string
 def email_owner_notify(sender, **kwargs):
     meeting = kwargs['instance']
 
-    subject = u'Confirma tu evento'
-    message = render_to_string('emails/confirm.html',
-        {'meeting': meeting})
+    if not meeting.is_confirmed:
+        subject = u'Confirma tu evento'
+        message = render_to_string('emails/confirm.html', {'meeting': meeting})
 
-    send_mail(subject=subject, message=message,
-        from_email=settings.EMAIL_SENDER, recipient_list=[meeting.owner_email])
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_SENDER,
+            recipient_list=[meeting.owner_email]
+        )
 
 def email_guest_notify(sender, **kwargs):
     guest = kwargs['instance']
