@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h3>{% trans 'Meeting info' %}</h3>
+<ul>
+  <li>{% trans 'Title' %}: {{ guest.meeting.title }}</li>
+  <li>{% trans 'When' %}: {{ guest.meeting.when }}</li>
+  <li>{% trans 'Where' %}: {{ guest.meeting.where }}</li>
+  <li>{% trans 'Description' %}: {{ guest.meeting.description }}</li>
+</ul>
+<h3>{% trans 'Guest list' %}</h3>
+<form id="meetings_create" action="" enctype="multipart/form-data" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>{% trans 'What will you do?' %}</legend>
+    {{ form.as_ul }}
+  </fieldset>
+  <input type="submit" value="{% trans 'Respond' %}" />
+</form>
+
+{% endblock %}

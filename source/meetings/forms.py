@@ -15,3 +15,9 @@ class GuestForm(forms.ModelForm):
         model = Guest
         exclude = ('fakeid', 'salt', 'key', 'attending',
             'is_responded')
+
+
+class GuestRespondForm(forms.ModelForm):
+    class Meta:
+        model = Guest
+        fields = ('attending',)

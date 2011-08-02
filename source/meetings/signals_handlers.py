@@ -21,8 +21,13 @@ def email_owner_notify(sender, **kwargs):
 def email_guest_notify(sender, **kwargs):
     guest = kwargs['instance']
 
-    subject = u'Te invitaron a %s' % guest.meeting.where
-    message = render_to_string('emails/respond.html', {'guest': guest})
+    if not guest.is_responded:
+        subject = u'Te invitaron a %s' % guest.meeting.where
+        message = render_to_string('emails/respond.html', {'guest': guest})
 
-    send_mail(subject=subject, message=message,
-        from_email=settings.EMAIL_SENDER, recipient_list=[guest.email])
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_SENDER,
+            recipient_list=[guest.email]
+        )

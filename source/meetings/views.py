@@ -5,7 +5,7 @@ from django.forms.formsets import formset_factory
 from django.forms.models import modelformset_factory
 
 from meetings.models import Meeting, Guest
-from meetings.forms import MeetingForm, GuestForm
+from meetings.forms import MeetingForm, GuestForm, GuestRespondForm
 
 
 def list(request):
@@ -92,8 +92,20 @@ def respond(request):
         fakeid=request.GET.get('f'),
         key=request.GET.get('k'))
 
+    if request.method == 'GET':
+        form = GuestRespondForm(instance=guest)
+
+    elif request.method == 'POST':
+        form = GuestRespondForm(instance=guest, data=request.POST)
+
+        if form.is_valid():
+            guest_instance = form.save(commit=False)
+            guest_instance.is_responded = True
+            guest_instance.save()
+
     return render(request, 'meetings/respond.html',
         {
             'guest': guest,
+            'form': form,
         },
     )
